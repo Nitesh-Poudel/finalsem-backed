@@ -6,11 +6,6 @@ Follow these steps to get the project running locally after cloning.
 
 ## 1. Clone the repository
 
-```bash
-git clone https://github.com/Pra-j/online-food-processing-system-backend.git
-cd online-food-processing-system-backend
-```
-
 ## 2. Install PHP dependencies
 
 ```bash
