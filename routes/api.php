@@ -126,3 +126,8 @@ Route::get('/kitchen/logs/{id}', [KitchenLogController::class, 'show']);
 Route::post('/kitchen/logs', [KitchenLogController::class, 'store']);
 Route::put('/kitchen/logs/{id}', [KitchenLogController::class, 'update']);
 Route::delete('/kitchen/logs/{id}', [KitchenLogController::class, 'destroy']);
+
+
+//user related
+// Route::get('/user/orders/history',[OrderController::class,'getOrderHistory']);
+Route::middleware('auth:sanctum')->get('/user/orders/history', [OrderController::class,'getOrderHistory']);

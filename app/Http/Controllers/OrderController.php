@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\OrderResource;
 use App\Models\Offer;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
@@ -182,6 +184,9 @@ class OrderController extends Controller
      */
     public function show(string $id)
     {
+        if(!$id){
+            $id = Auth::id();
+        }
         $order = Order::with([
             'orderItems.product:id,name,price,stock,category_id'
         ])->find($id);
@@ -361,5 +366,31 @@ class OrderController extends Controller
         $order->save();
 
         return response()->json(['message' => 'Order status updated successfully', 'order' => $order]);
+    }
+
+   public function getOrderHistory()
+    {
+        $user = Auth::user(); 
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not logged in'
+            ], 401);
+        }
+
+        $orders = Order::with([
+            'orderItems.product',
+            'user'             
+        ])
+        ->where('user_id', $user->id)
+        ->where('status','completed')
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+        return response()->json([
+            'success' => true,
+                'count'=>$orders->count(),
+               'orders' => OrderResource::collection($orders)
+        ]);
     }
 }
